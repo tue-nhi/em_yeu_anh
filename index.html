@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mood Booster Card</title>
+  <style>
+    :root{--bg1:#fff0f6;--bg2:#ffe4e6;--accent:#be123c;--card:#ffffff}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg1),var(--bg2));font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;color:var(--accent)}
+    .wrap{max-width:520px;width:92%;padding:28px}
+    .stage{perspective:900px}
+
+    /* Card */
+    .card{width:100%;height:320px;max-width:480px;margin:0 auto;position:relative}
+    .pane{position:absolute;inset:0;border-radius:18px;box-shadow:0 12px 30px rgba(138,49,73,.12);overflow:hidden;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.9,.25,1)}
+
+    .front{background:linear-gradient(180deg,#fff 0%,#fff6f8 100%);display:flex;align-items:center;justify-content:center;padding:24px}
+    .back{background:linear-gradient(180deg,#fffaf0 0%,#fff6ff 100%);transform:rotateY(180deg);padding:20px}
+
+    .card.open .pane{transform:rotateY(180deg)}
+
+    .title{font-size:1.45rem;font-weight:700;margin:0;color:var(--accent);text-align:center}
+    .subtitle{margin-top:8px;color:rgba(190,18,60,.8)}
+
+    /* ribbon */
+    .ribbon{position:absolute;left:18px;top:18px;background:linear-gradient(90deg,#ff9bb8,#ff6486);color:white;padding:6px 12px;border-radius:999px;font-weight:600;box-shadow:0 6px 14px rgba(244,63,94,.14)}
+
+    /* inside content */
+    .note{height:100%;display:flex;flex-direction:column;justify-content:space-between}
+    .note .greeting{font-size:1.1rem;font-weight:700;margin-bottom:6px}
+    .note .body{flex:1;overflow:auto;padding-right:6px}
+    .doodles{display:flex;gap:8px;flex-wrap:wrap}
+
+    .controls{display:flex;gap:10px;justify-content:center;margin-top:16px}
+    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:12px;border:none;cursor:pointer;font-weight:600;box-shadow:0 6px 18px rgba(190,18,60,.12)}
+    .btn.secondary{background:white;color:var(--accent);border:1px solid rgba(190,18,60,.12)}
+
+    .message-box{background:rgba(190,18,60,.04);border-radius:12px;padding:12px;color: #6b0b2a}
+    .small{font-size:0.85rem;color:rgba(190,18,60,.75)}
+
+    /* confetti */
+    .confetti{position:absolute;inset:0;pointer-events:none}
+    .confetti span{position:absolute;display:block;width:10px;height:10px;border-radius:2px;opacity:0;transform:translateY(0) rotate(0deg)}
+
+    @keyframes pop{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-180px) scale(.6)}}
+
+    /* responsive */
+    @media (max-width:520px){.card{height:300px}.note .greeting{font-size:1rem}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:14px">
+      <h2 style="margin:0;font-size:1.25rem;">Thiệp be bé xinh iu</h2>
+      <p class="small">A tiny greeting card for embe</p>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="card" id="card">
+        <div class="pane front" aria-hidden="false">
+          <div style="width:100%">
+            <div class="ribbon">For you</div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%">
+              <div style="max-width:320px">
+                <h3 class="title">Open me — a little pick‑me‑up 💌</h3>
+                <p class="subtitle">Click the card to unfold a note, doodles and a tiny surprise.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pane back" aria-hidden="true">
+          <div class="note">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div>
+                  <div class="greeting">Gửi embe yêu,</div>
+                  <div class="small">Một cái web xinh iu cho hôm nayy</div>
+                </div>
+                <div style="font-size:28px;">💖</div>
+              </div>
+
+              <div class="body">
+                <div class="message-box" id="customMessage" contenteditable="true" role="textbox" aria-label="Edit your message">Em xin lỗi vì hôm qua làm embe mưa bùn tỉnh lẻ, em yêu embe nhiều mà, nha. Embe đừng bùn em, em cũng khóc nhè đó hic. Embe dậy ngoan, có một ngày mới vui vẻ năng suất, gòi tối về xem phim nghỉ ngơi call với em nhaa.<br> em yêu anh nhiều mà, có gì embe buồn em thì nói cho em nghe nhaa. có gì em cũng nói embe màa <br> nói zị thuii chứ em k nghĩ nhìu đâu, embe yêu get ready xinh ngoan xong chụp cho em coi nhaa.  </div>
+
+                <div style="margin-top:12px" class="doodles" id="doodles">
+                  <!-- SVG doodles inserted by JS -->
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div class="small">Em yêu anh nhiều</div>
+              <div class="controls">
+                <button class="btn" id="surpriseBtn">Surprise!</button>
+                <button class="btn secondary" id="closeBtn">Close</button>
+              </div>
+            </div>
+          </div>
+        </div> 
+        </div>   
+    <div class="confetti" id="confetti"></div>
+</div>
+
+
+  <script>
+    // Basic interactivity: open/close card, surprise confetti, add doodles
+    const card = document.getElementById('card');
+    const stage = document.getElementById('stage');
+    const openBtn = document.getElementById('openCard');
+    const closeBtn = document.getElementById('closeBtn');
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const doodles = document.getElementById('doodles');
+    const confetti = document.getElementById('confetti');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function toggleCard(open){
+      if(open){
+        card.classList.add('open');
+        card.querySelector('.front').setAttribute('aria-hidden','true');
+        card.querySelector('.back').setAttribute('aria-hidden','false');
+        openBtn.textContent = 'Close Card';
+      } else {
+        card.classList.remove('open');
+        card.querySelector('.front').setAttribute('aria-hidden','false');
+        card.querySelector('.back').setAttribute('aria-hidden','true');
+        openBtn.textContent = 'Open Card';
+      }
+    }
+
+    openBtn.addEventListener('click', ()=> toggleCard(!card.classList.contains('open')));
+    stage.addEventListener('click', (e)=>{
+      // allow clicking the front to open but avoid clicks inside editable text
+      const target = e.target;
+      if(target.id === 'customMessage' || target.closest('#customMessage')) return;
+      toggleCard(true);
+    });
+    closeBtn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleCard(false); });
+
+    // Insert a few cute SVG doodles
+    function makeDoodle(type){
+      if(type === 'star'){
+        return `<svg width="52" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l2.6 6.8L22 10l-5 4.2L18 22l-6-3.4L6 22l1-7.8L2 10l7.4-1.2L12 2z" fill="rgba(190,18,60,0.14)" stroke="rgba(190,18,60,0.9)" stroke-width="0.8"/></svg>`;
+      }
+      if(type === 'flower'){
+        return `<svg width="60" height="54" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="2" fill="#ff9bb8"/><path d="M12 2a2 2 0 0 1 2 2c0 2.8 1.9 4 4 4a2 2 0 0 1 0 4c-2.8 0-4 1.9-4 4a2 2 0 0 1-4 0c0-2.8-1.9-4-4-4a2 2 0 0 1 0-4c2.8 0 4-1.9 4-4a2 2 0 0 1 2-2z" fill="rgba(244,63,94,0.12)" stroke="#be123c" stroke-width="0.4"/></svg>`;
+      }
+      return '';
+    }
+
+    doodles.innerHTML = makeDoodle('star') + makeDoodle('flower') + makeDoodle('star');
+
+    // Surprise: confetti + soft chime
+    function doSurprise(){
+      // confetti pieces
+      for(let i=0;i<26;i++){
+        const s = document.createElement('span');
+        s.style.left = (10 + Math.random()*80) + '%';
+        s.style.top = (60 + Math.random()*20) + '%';
+        s.style.background = ['#ffccdd','#ff9bb8','#ffd6e0','#fbcfe8'][Math.floor(Math.random()*4)];
+        s.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
+        confetti.appendChild(s);
+        // animate
+        setTimeout(()=>{
+          s.style.transition = 'transform 900ms cubic-bezier(.2,.8,.2,1), opacity 900ms';
+          s.style.transform = `translateY(-180px) rotate(${Math.random()*720}deg) scale(${0.7+Math.random()*0.6})`;
+          s.style.opacity = '0';
+        }, 25 + Math.random()*150);
+        setTimeout(()=> s.remove(), 1200);
+      }
+
+      // small chime
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = 520;
+        g.gain.value = 0.0001;
+        o.connect(g); g.connect(ctx.destination);
+        const now = ctx.currentTime;
+        g.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+        o.start(now); o.stop(now + 0.62);
+      }catch(e){/* ignore audio errors on some browsers */}
+
+      // also animate a small pulse on the heart emoji
+      const heart = document.querySelector('.greeting');
+      heart.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:600,easing:'ease-out'});
+    }
+
+    surpriseBtn.addEventListener('click', (e)=>{ e.stopPropagation(); doSurprise(); });
+
+    // Download the back of the card as an image (simple approach using svg foreignObject)
+    downloadBtn.addEventListener('click', async ()=>{
+      const content = document.getElementById('customMessage').innerHTML;
+      const w = 800, h = 600;
+      const svg = `<?xml version='1.0' encoding='UTF-8'?>
+        <svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'>
+          <foreignObject width='100%' height='100%'>
+            <div xmlns='http://www.w3.org/1999/xhtml' style='font-family:Inter, Roboto, Arial; font-size:18px; color:#6b0b2a; background: linear-gradient(180deg,#fffaf0,#fff6ff); padding:28px; width:${w-56}px; height:${h-56}px; border-radius:12px;'>
+              <div style='font-weight:700;font-size:26px;margin-bottom:6px;'>Àn nhon embe yêu,</div>
+              <div>${content}</div>
+            </div>
+          </foreignObject>
+        </svg>`;
+      const blob = new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'mood-card.svg'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // small accessibility: allow Enter to open/close
+    openBtn.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') toggleCard(!card.classList.contains('open')); });
+  </script>
+</body>
+</html>
